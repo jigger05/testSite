@@ -1,49 +1,207 @@
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <title>Отправка данных в Google Sheets</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Регистрация — Екатеринбург Груша</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<form id="myForm">
-    <input type="text" name="Имя" placeholder="Имя" required>
-    <input type="text" name="Email" placeholder="Email" required>
-    <textarea name="message" placeholder="message"></textarea>
-    <button type="submit">Отправить</button>
-</form>
-<div id="message"></div>
 
-<script>
-const form = document.getElementById('myForm');
-const messageDiv = document.getElementById('message');
-const scriptUrl = 'https://script.google.com/macros/s/AKfycby2z18Zabj3fuWGhBs2RfUTnsgxqgFLxTR6dk1zRM03noIHPzmpsVXitT6JmOVqJajlaA/exec'; // ЗАМЕНИТЕ на правильный URL
+  <header class="site-header">
+    <span class="logo">Наша свадьба</span>
+  </header>
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    messageDiv.innerHTML = '<p>Отправка...</p>';
-    
-    const formData = new FormData(form);
-    // Превращаем FormData в объект, а потом в URL-кодированную строку
-    const data = new URLSearchParams(formData);
-    
-    fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: data   // <-- ТЕПЕРЬ ТЕЛО ЕСТЬ
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.result === 'success') {
-            messageDiv.innerHTML = '<p style="color:green;">✅ Успешно отправлено!</p>';
-            form.reset();
-        } else {
-            messageDiv.innerHTML = `<p style="color:red;">❌ Ошибка: ${data.error}</p>`;
-        }
-    })
-    .catch(error => {   // <-- УБРАЛИ ЛИШНЮЮ ТОЧКУ С ЗАПЯТОЙ ПЕРЕД .catch
-        messageDiv.innerHTML = `<p style="color:blue;">❌ Ошибка: ${error}</p>`;
-    });
-});
+  <div class="page-wrapper">
+
+    <section class="hero">
+      <!-- <p class="hero__label">Страница 1 из 4</p> -->
+      <h1 class="hero__title">Регистрация на свадьбу</h1>
+      <p class="hero__desc">Укажите ваши данные чтобы мы поняли, кто вы такой</p>
+    </section>
+
+    <!--
+      ФОРМА РЕГИСТРАЦИИ
+      Теги: <form>, <fieldset>, <legend>, <label>, <input>, <select>, <option>, <button>
+      Атрибут action — адрес обработчика; method="post" — данные не передаются в URL
+    -->
+    <form  id="myForm">
+
+      <!-- Раздел: Личные данные -->
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Личные данные</h2>
+          <p class="card__subtitle">Поля, отмеченные <span style="color:var(--color-accent)">*</span>, обязательны для заполнения</p>
+        </div>
+
+        <fieldset>
+          <legend>ФИО</legend>
+          <div class="form-grid">
+
+            <!-- input[type="text"] — однострочное текстовое поле -->
+            <div class="form-group">
+              <label for="first-name">Имя <span class="required">*</span></label>
+              <input
+                type="text"
+                id="first-name"
+                name="Имя"
+                placeholder="Иван"
+                autocomplete="given-name"
+                required
+                minlength="2"
+                maxlength="50"
+              />
+              <span class="hint">От 2 до 50 символов</span>
+            </div>
+
+            <div class="form-group">
+              <label for="last-name">Фамилия <span class="required">*</span></label>
+              <input
+                type="text"
+                id="last-name"
+                name="Фамилия"
+                placeholder="Иванов"
+                autocomplete="family-name"
+                required
+                minlength="2"
+                maxlength="50"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="patronymic">Отчество</label>
+              <input
+                type="text"
+                id="patronymic"
+                name="Отчество"
+                placeholder="Иванович"
+                autocomplete="additional-name"
+                maxlength="50"
+              />
+            </div>
+
+            <!-- input[type="date"] — выбор даты -->
+            <div class="form-group">
+              <label for="age">Возраст<span class="required">*</span></label>
+              <input
+                type="text"
+                id="age"
+                name="Возраст"
+                placeholder="20"
+                min="1920-01-01"
+                max="2010-12-31"
+                required
+              />
+            </div>
+
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Пью ли я?</legend>
+          <!-- input[type="radio"] — переключатели (выбор одного варианта) -->
+          <div class="radio-group inline">
+            <label class="radio-item">
+              <input type="radio" name="ПьетЛи" value="Пьет" required />
+              <span>Пью</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="ПьетЛи" value="Не пьет" />
+              <span>Не пью</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="ПьетЛи" value="Пока не знает" />
+              <span>Пока что не знаю</span>
+            </label>
+          </div>
+        </fieldset>
+        
+      </div>
+
+      <!-- Раздел: Контактные данные -->
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Контактные данные</h2>
+        </div>
+
+        <div class="form-grid">
+
+          <!-- input[type="email"] — поле для e-mail адреса -->
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="ivan@example.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+
+          <!-- input[type="tel"] — поле для номера телефона -->
+          <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input
+              type="tel"
+              id="phone"
+              name="НомерТелефона"
+              placeholder="+7 (999) 000-00-00"
+              autocomplete="tel"
+              pattern="[\+]?[0-9\s\(\)\-]{7,20}"
+            />
+            <span class="hint">Формат: +7 (999) 000-00-00</span>
+          </div>
+        </div>
+      </div>
+
+        <!-- Кнопки формы -->
+        <div class="btn-row">
+          <button type="submit" class="btn-primary">Создать аккаунт</button>
+          <button type="reset" class="btn-secondary">Очистить</button>
+        </div>
+
+      </div>
+      <div id="message"></div>
+    </form>
+  </div>
+  <script>
+        const form = document.getElementById('myForm');
+        const messageDiv = document.getElementById('message');
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycby2z18Zabj3fuWGhBs2RfUTnsgxqgFLxTR6dk1zRM03noIHPzmpsVXitT6JmOVqJajlaA/exec'; // ЗАМЕНИТЕ на правильный URL
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            messageDiv.innerHTML = '<p>Отправка...</p>';
+            
+            const formData = new FormData(form);
+            // Превращаем FormData в объект, а потом в URL-кодированную строку
+            const data = new URLSearchParams(formData);
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: data   // <-- ТЕПЕРЬ ТЕЛО ЕСТЬ
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    messageDiv.innerHTML = '<p style="color:green;">✅ Успешно отправлено!</p>';
+                    form.reset();
+                } else {
+                    messageDiv.innerHTML = `<p style="color:red;">❌ Ошибка: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {   // <-- УБРАЛИ ЛИШНЮЮ ТОЧКУ С ЗАПЯТОЙ ПЕРЕД .catch
+                messageDiv.innerHTML = `<p style="color:blue;">❌ Ошибка: ${error}</p>`;
+            });
+        });
 </script>
+
+  <footer class="site-footer">
+        <span>Екатеринбург Груша © 2026</span>
+  </footer>
 </body>
 </html>
