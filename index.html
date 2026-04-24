@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Отправка данных в Google Sheets</title>
+</head>
+<body>
+<form id="myForm">
+    <input type="text" name="Имя" placeholder="Имя" required>
+    <input type="text" name="Email" placeholder="Email" required>
+    <textarea name="message" placeholder="message"></textarea>
+    <button type="submit">Отправить</button>
+</form>
+<div id="message"></div>
+
+<script>
+const form = document.getElementById('myForm');
+const messageDiv = document.getElementById('message');
+const scriptUrl = 'https://script.google.com/macros/s/AKfycby2z18Zabj3fuWGhBs2RfUTnsgxqgFLxTR6dk1zRM03noIHPzmpsVXitT6JmOVqJajlaA/exec'; // ЗАМЕНИТЕ на правильный URL
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    messageDiv.innerHTML = '<p>Отправка...</p>';
+    
+    const formData = new FormData(form);
+    // Превращаем FormData в объект, а потом в URL-кодированную строку
+    const data = new URLSearchParams(formData);
+    
+    fetch(scriptUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data   // <-- ТЕПЕРЬ ТЕЛО ЕСТЬ
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result === 'success') {
+            messageDiv.innerHTML = '<p style="color:green;">✅ Успешно отправлено!</p>';
+            form.reset();
+        } else {
+            messageDiv.innerHTML = `<p style="color:red;">❌ Ошибка: ${data.error}</p>`;
+        }
+    })
+    .catch(error => {   // <-- УБРАЛИ ЛИШНЮЮ ТОЧКУ С ЗАПЯТОЙ ПЕРЕД .catch
+        messageDiv.innerHTML = `<p style="color:blue;">❌ Ошибка: ${error}</p>`;
+    });
+});
+</script>
+</body>
+</html>
